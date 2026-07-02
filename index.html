@@ -351,6 +351,57 @@
       color: #8a4e00;
     }
 
+    .transport {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #eefcf2;
+      border: 1px solid rgba(55, 199, 127, 0.28);
+    }
+
+    .transport-text {
+      color: #17643b;
+      font-size: 14px;
+      line-height: 1.4;
+      font-weight: 800;
+    }
+
+    .transport-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .map-btn,
+    .taxi-btn {
+      min-height: 42px;
+      border: 0;
+      border-radius: 8px;
+      padding: 0 12px;
+      color: #fff;
+      font-weight: 850;
+      cursor: pointer;
+    }
+
+    .map-btn {
+      background: linear-gradient(135deg, #15b86f, #2ec4b6);
+    }
+
+    .taxi-btn {
+      background: linear-gradient(135deg, #ffcf24, #ff8a00);
+      color: #2b2200;
+    }
+
+    .geo-status {
+      min-height: 18px;
+      color: #5e6b77;
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1.35;
+    }
+
     .featured {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -439,6 +490,10 @@
       }
 
       .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .transport-actions {
         grid-template-columns: 1fr;
       }
 
@@ -582,6 +637,8 @@
         types: ["sights", "food"],
         place: "Парк 28 панфиловцев и Вознесенский собор",
         cafe: "Кафе: Coffeedelia или Traveler's Coffee в центре",
+        coords: [43.2589, 76.9531],
+        bus: "Автобус/метро: доехать до центра, ориентир - станция метро Жибек Жолы или остановки у парка 28 панфиловцев.",
         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Zenkov_cathedral.jpg/250px-Zenkov_cathedral.jpg",
         tags: ["семья", "до 15 000 ₸", "достопримечательности"],
         text: "Спокойная прогулка по центру без сложной логистики: детям интересно, взрослым красиво, а бюджет остается мягким.",
@@ -595,6 +652,8 @@
         types: ["sights", "active", "food"],
         place: "Парк Кок-Тобе",
         cafe: "Кафе: Yurt на Кок-Тобе или семейное кафе у Достык",
+        coords: [43.2322, 76.9764],
+        bus: "Автобус: доехать до проспекта Достык/Дворца Республики, дальше канатная дорога или короткая поездка на такси.",
         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/%D0%9A%D0%BE%D0%BA-%D0%A2%D0%BE%D0%B1%D0%B5%2C_%D0%B2%D0%B8%D0%B4_%D1%81_%D0%BB%D0%B5%D1%81%D1%82%D0%BD%D0%B8%D1%86%D1%8B.jpg/250px-%D0%9A%D0%BE%D0%BA-%D0%A2%D0%BE%D0%B1%D0%B5%2C_%D0%B2%D0%B8%D0%B4_%D1%81_%D0%BB%D0%B5%D1%81%D1%82%D0%BD%D0%B8%D1%86%D1%8B.jpg",
         tags: ["семья", "до 30 000 ₸", "активно"],
         text: "Подъем к виду на город, прогулка по парку и пара аттракционов. Хорошо подходит для половины дня.",
@@ -608,6 +667,8 @@
         types: ["active", "food"],
         place: "Медеу и горная зона",
         cafe: "Ресторан: Navat или Qaimaq для семейного обеда",
+        coords: [43.1578, 77.0581],
+        bus: "Автобус: доехать до конечной у Медеу, затем пешая прогулка у комплекса или пересадка к Шымбулаку.",
         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/%D0%9C%D0%B5%D0%B4%D0%B5%D0%BE_1982_.jpg/250px-%D0%9C%D0%B5%D0%B4%D0%B5%D0%BE_1982_.jpg",
         tags: ["семья", "до 50 000 ₸", "кафе"],
         text: "Больше воздуха, больше впечатлений и нормальный обед после прогулки.",
@@ -621,6 +682,8 @@
         types: ["sights", "food"],
         place: "Арбат, Панфилова и центр Алматы",
         cafe: "Кафе: Bowler Coffee Roasters или донерная рядом с Арбатом",
+        coords: [43.2622, 76.9455],
+        bus: "Автобус/метро: удобнее выйти у метро Жибек Жолы, дальше пешком по Арбату и Панфилова.",
         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Panfilov_Street_sidewalk.jpg/330px-Panfilov_Street_sidewalk.jpg",
         tags: ["студенты", "до 15 000 ₸", "кафе"],
         text: "Маршрут для компании: много пешком, много фото, кофе вместо тяжелого обеда.",
@@ -634,6 +697,8 @@
         types: ["active", "food"],
         place: "Медеу и лестница здоровья",
         cafe: "Кафе: Coffee Boom или горячий чай у Медеу",
+        coords: [43.1578, 77.0581],
+        bus: "Автобус: маршрут до Медеу, дальше пешком к лестнице здоровья и обзорным точкам.",
         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/%D0%9C%D0%B5%D0%B4%D0%B5%D0%BE_1982_.jpg/250px-%D0%9C%D0%B5%D0%B4%D0%B5%D0%BE_1982_.jpg",
         tags: ["студенты", "до 30 000 ₸", "активно"],
         text: "Когда хочется выбраться из города, но не превращать выходной в экспедицию.",
@@ -647,6 +712,8 @@
         types: ["active", "food"],
         place: "Медеу и Шымбулак",
         cafe: "Кафе: Shymbulak Mountain Resort или Marrone Rosso",
+        coords: [43.1281, 77.0808],
+        bus: "Автобус: доехать до Медеу, затем подняться на канатной дороге до Шымбулака.",
         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/56/Shimbulak1.JPG/330px-Shimbulak1.JPG",
         tags: ["студенты", "до 50 000 ₸", "активно"],
         text: "Для компании, которая хочет яркий день: горы, подъемники и хороший ужин.",
@@ -660,6 +727,8 @@
         types: ["sights", "food"],
         place: "Главный Ботанический сад Алматы",
         cafe: "Кафе: Aroma или небольшая кофейня рядом с Атакентом",
+        coords: [43.2250, 76.9150],
+        bus: "Автобус: доехать до остановок у Атакента или Ботанического сада, вход выбрать по ближайшей стороне.",
         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/%D0%9F%D1%80%D1%83%D0%B4_%D0%B2%D0%BE%D0%B7%D0%BB%D0%B5_%D1%8E%D0%B6%D0%BD%D0%BE%D0%B3%D0%BE_%D0%B2%D1%85%D0%BE%D0%B4%D0%B0_%D0%B2_%D0%91%D0%BE%D1%82%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D1%81%D0%B0%D0%B4.jpg/330px-%D0%9F%D1%80%D1%83%D0%B4_%D0%B2%D0%BE%D0%B7%D0%BB%D0%B5_%D1%8E%D0%B6%D0%BD%D0%BE%D0%B3%D0%BE_%D0%B2%D1%85%D0%BE%D0%B4%D0%B0_%D0%B2_%D0%91%D0%BE%D1%82%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D1%81%D0%B0%D0%B4.jpg",
         tags: ["пара", "до 15 000 ₸", "достопримечательности"],
         text: "Нежный маршрут без суеты: деревья, дорожки, разговоры и кофе после прогулки.",
@@ -673,6 +742,8 @@
         types: ["sights", "food"],
         place: "Вечерний Кок-Тобе",
         cafe: "Кафе: Yurt или ресторан на верхней площадке Кок-Тобе",
+        coords: [43.2322, 76.9764],
+        bus: "Автобус: до Дворца Республики или Hotel Kazakhstan, затем канатная дорога на Кок-Тобе.",
         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/01_%D0%9D%D0%B0_%D0%B3%D0%BE%D1%80%D0%B5_%D0%9A%D0%BE%D0%BA_%D0%A2%D1%8E%D0%B1%D0%B5.jpg/250px-01_%D0%9D%D0%B0_%D0%B3%D0%BE%D1%80%D0%B5_%D0%9A%D0%BE%D0%BA_%D0%A2%D1%8E%D0%B1%D0%B5.jpg",
         tags: ["пара", "до 30 000 ₸", "кафе"],
         text: "Красивый вид, закат и легкий ужин. Хороший вариант для романтичного вечера.",
@@ -686,6 +757,8 @@
         types: ["active", "food"],
         place: "Терренкур и район Достык",
         cafe: "Ресторан: Afisha, Qaimaq или Line Brew",
+        coords: [43.2360, 76.9588],
+        bus: "Автобус: доехать до района Достык/Абая, дальше пешком к Терренкуру и кафе поблизости.",
         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Panfilov_Street_sidewalk.jpg/330px-Panfilov_Street_sidewalk.jpg",
         tags: ["пара", "до 50 000 ₸", "кафе"],
         text: "Для случая, когда прогулка должна плавно перейти в красивый ужин.",
@@ -699,6 +772,8 @@
         types: ["sights", "food"],
         place: "Парк 28 панфиловцев",
         cafe: "Кафе: Traveler's Coffee или Coffeedelia для чая",
+        coords: [43.2589, 76.9531],
+        bus: "Автобус/метро: доехать до центра, ориентир - Жибек Жолы или остановки у парка.",
         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Ascension_Cathedral%2C_Almaty_KZ.JPG/330px-Ascension_Cathedral%2C_Almaty_KZ.JPG",
         tags: ["пенсионный возраст", "до 15 000 ₸", "достопримечательности"],
         text: "Короткие расстояния, много скамеек и знакомые городские места.",
@@ -712,6 +787,8 @@
         types: ["sights", "food"],
         place: "Ботанический сад Алматы",
         cafe: "Кафе: Aroma или спокойное кафе рядом с Ботаническим садом",
+        coords: [43.2250, 76.9150],
+        bus: "Автобус: до остановок у Атакента, Ботанического сада или улицы Тимирязева.",
         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/%D0%9F%D1%80%D1%83%D0%B4_%D0%B2%D0%BE%D0%B7%D0%BB%D0%B5_%D1%8E%D0%B6%D0%BD%D0%BE%D0%B3%D0%BE_%D0%B2%D1%85%D0%BE%D0%B4%D0%B0_%D0%B2_%D0%91%D0%BE%D1%82%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D1%81%D0%B0%D0%B4.jpg/330px-%D0%9F%D1%80%D1%83%D0%B4_%D0%B2%D0%BE%D0%B7%D0%BB%D0%B5_%D1%8E%D0%B6%D0%BD%D0%BE%D0%B3%D0%BE_%D0%B2%D1%85%D0%BE%D0%B4%D0%B0_%D0%B2_%D0%91%D0%BE%D1%82%D0%B0%D0%BD%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B8%D0%B9_%D1%81%D0%B0%D0%B4.jpg",
         tags: ["пенсионный возраст", "до 30 000 ₸", "достопримечательности"],
         text: "Мягкий маршрут для прогулки, отдыха и красивых сезонных фотографий.",
@@ -725,6 +802,8 @@
         types: ["sights", "food"],
         place: "Кок-Тобе с поездкой на такси",
         cafe: "Ресторан: Navat, Qaimaq или ресторан на Кок-Тобе",
+        coords: [43.2322, 76.9764],
+        bus: "Автобус: до Достык/Дворца Республики, дальше лучше такси или канатная дорога.",
         image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/01_%D0%9D%D0%B0_%D0%B3%D0%BE%D1%80%D0%B5_%D0%9A%D0%BE%D0%BA_%D0%A2%D1%8E%D0%B1%D0%B5.jpg/250px-01_%D0%9D%D0%B0_%D0%B3%D0%BE%D1%80%D0%B5_%D0%9A%D0%BE%D0%BA_%D0%A2%D1%8E%D0%B1%D0%B5.jpg",
         tags: ["пенсионный возраст", "до 50 000 ₸", "кафе"],
         text: "Минимум пешей нагрузки, максимум красивого вида и комфортный ресторанный финал.",
@@ -782,10 +861,89 @@
             <div class="route">${idea.route}</div>
             <div class="place">Место: ${idea.place}</div>
             <div class="cafe">${idea.cafe}</div>
+            <div class="transport">
+              <div class="transport-text">${idea.bus}</div>
+              <div class="transport-actions">
+                <button class="map-btn" type="button" data-action="bus" data-index="${ideas.indexOf(idea)}">Автобус</button>
+                <button class="taxi-btn" type="button" data-action="taxi" data-index="${ideas.indexOf(idea)}">Яндекс Такси</button>
+              </div>
+              <div class="geo-status" aria-live="polite"></div>
+            </div>
           </div>
         `;
         ideasGrid.appendChild(card);
       });
+    }
+
+    function yandexMapsUrl(destination, mode = "auto", origin = null) {
+      const end = destination.coords.join(",");
+      const params = origin
+        ? `rtext=${origin.lat},${origin.lon}~${end}&rtt=${mode}`
+        : `ll=${destination.coords[1]},${destination.coords[0]}&z=15&text=${encodeURIComponent(destination.place)}`;
+      return `https://yandex.com/maps/?${params}`;
+    }
+
+    function yandexTaxiUrl(destination, origin) {
+      const [endLat, endLon] = destination.coords;
+      const base = "https://3.redirect.appmetrica.yandex.com/route";
+      const params = new URLSearchParams({
+        end_lat: endLat,
+        end_lon: endLon,
+        ref: "weekend-ideas-almaty",
+        appmetrica_tracking_id: "1178268795219780156"
+      });
+
+      if (origin) {
+        params.set("start_lat", origin.lat);
+        params.set("start_lon", origin.lon);
+      }
+
+      return `${base}?${params.toString()}`;
+    }
+
+    function openWithLocation(idea, mode, statusNode) {
+      statusNode.textContent = "Определяем ваше местоположение...";
+      const routeWindow = window.open("", "_blank");
+
+      const navigate = (url) => {
+        if (routeWindow) {
+          routeWindow.location.href = url;
+        } else {
+          window.location.href = url;
+        }
+      };
+
+      const openRoute = (origin) => {
+        statusNode.textContent = mode === "bus"
+          ? "Открываем маршрут автобусом в Яндекс Картах."
+          : "Открываем Яндекс Такси от вашего местоположения.";
+        const url = mode === "bus"
+          ? yandexMapsUrl(idea, "mt", origin)
+          : yandexTaxiUrl(idea, origin);
+        navigate(url);
+      };
+
+      const openFallback = () => {
+        statusNode.textContent = "Геолокация недоступна. Открываем точку назначения.";
+        const url = mode === "bus"
+          ? yandexMapsUrl(idea, "mt")
+          : yandexTaxiUrl(idea, null);
+        navigate(url);
+      };
+
+      if (!navigator.geolocation) {
+        openFallback();
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => openRoute({
+          lat: position.coords.latitude.toFixed(6),
+          lon: position.coords.longitude.toFixed(6)
+        }),
+        openFallback,
+        { enableHighAccuracy: true, timeout: 9000, maximumAge: 60000 }
+      );
     }
 
     function updateSummary() {
@@ -840,6 +998,15 @@
       const selected = source[Math.floor(Math.random() * source.length)];
       render([selected]);
       document.querySelector("#ideasGrid").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    ideasGrid.addEventListener("click", (event) => {
+      const button = event.target.closest("button[data-action]");
+      if (!button) return;
+
+      const idea = ideas[Number(button.dataset.index)];
+      const statusNode = button.closest(".transport").querySelector(".geo-status");
+      openWithLocation(idea, button.dataset.action, statusNode);
     });
 
     [audienceFilter, budgetFilter, typeFilter].forEach((filter) => {
