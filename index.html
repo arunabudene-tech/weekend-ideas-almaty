@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Генератор идей для выходных в Алматы с фильтрами по бюджету, погоде, времени и компании.">
+  <meta name="theme-color" content="#ff9f1c">
   <title>Генератор идей для выходных в Алматы</title>
   <style>
     :root {
@@ -120,7 +122,8 @@
     }
 
     .primary,
-    .secondary {
+    .secondary,
+    .share-btn {
       min-height: 48px;
       border: 0;
       border-radius: 8px;
@@ -145,6 +148,20 @@
       background: #ffffff;
       color: #183153;
       border: 2px solid rgba(58, 134, 255, 0.28);
+    }
+
+    .share-btn {
+      background: linear-gradient(135deg, var(--green), var(--cyan));
+      color: #062a23;
+      box-shadow: 0 12px 24px rgba(46, 196, 182, 0.2);
+    }
+
+    .share-status {
+      flex-basis: 100%;
+      min-height: 20px;
+      color: #52606f;
+      font-size: 13px;
+      font-weight: 800;
     }
 
     .city-card {
@@ -573,7 +590,8 @@
       }
 
       .primary,
-      .secondary {
+      .secondary,
+      .share-btn {
         width: 100%;
       }
 
@@ -590,11 +608,36 @@
       }
 
       .filters {
-        position: sticky;
-        top: 8px;
+        position: static;
         z-index: 2;
         padding: 12px;
         grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 430px) {
+      .page {
+        width: min(100% - 16px, 1180px);
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+
+      .lead {
+        font-size: 16px;
+      }
+
+      .city-card {
+        min-height: 235px;
+      }
+
+      .city-note strong {
+        font-size: 23px;
+      }
+
+      .idea-card {
+        min-height: auto;
       }
     }
   </style>
@@ -609,6 +652,8 @@
         <div class="hero-actions">
           <button class="primary" type="button" id="randomBtn">Сгенерировать идею</button>
           <button class="secondary" type="button" id="showAllBtn">Показать все варианты</button>
+          <button class="share-btn" type="button" id="shareBtn">Поделиться ссылкой</button>
+          <div class="share-status" id="shareStatus" aria-live="polite"></div>
         </div>
         <div class="lang-switch" aria-label="Переключатель языка">
           <button class="lang-btn is-active" type="button" data-lang="ru">RU</button>
@@ -950,6 +995,7 @@
     const emptyState = document.querySelector("#emptyState");
     const filterSummary = document.querySelector("#filterSummary");
     const bestPick = document.querySelector("#bestPick");
+    const shareStatus = document.querySelector("#shareStatus");
     let currentLang = "ru";
 
     function enrichIdea(idea) {
@@ -1003,6 +1049,10 @@
         bus: "Автобус",
         taxi: "Яндекс Такси",
         openCafe: "открыть на карте",
+        shareButton: "Поделиться ссылкой",
+        shareCopied: "Ссылка скопирована. Можно отправить ее в мессенджер.",
+        shareReady: "Ссылка готова для отправки.",
+        shareError: "Не получилось скопировать автоматически. Скопируйте ссылку из адресной строки.",
         geoStart: "Определяем ваше местоположение...",
         geoBus: "Открываем маршрут автобусом в Яндекс Картах.",
         geoTaxi: "Открываем Яндекс Такси от вашего местоположения.",
@@ -1021,6 +1071,10 @@
         bus: "Автобус",
         taxi: "Яндекс Такси",
         openCafe: "картада ашу",
+        shareButton: "Сілтемені бөлісу",
+        shareCopied: "Сілтеме көшірілді. Оны мессенджерге жібере аласыз.",
+        shareReady: "Сілтеме жіберуге дайын.",
+        shareError: "Автоматты көшіру болмады. Сілтемені мекенжай жолынан көшіріңіз.",
         geoStart: "Орналасқан жеріңіз анықталуда...",
         geoBus: "Автобус бағытын Яндекс Картада ашамыз.",
         geoTaxi: "Орналасқан жеріңізден Яндекс Такси ашамыз.",
@@ -1180,6 +1234,79 @@
       document.querySelector("#applyBtn").textContent = currentLang === "kz" ? "Таңдау" : "Подобрать";
       document.querySelector("#randomBtn").textContent = currentLang === "kz" ? "Идея ұсыну" : "Сгенерировать идею";
       document.querySelector("#showAllBtn").textContent = currentLang === "kz" ? "Барлығын көрсету" : "Показать все варианты";
+      document.querySelector("#shareBtn").textContent = text("shareButton");
+    }
+
+    function selectedState() {
+      return {
+        audience: audienceFilter.value,
+        budget: budgetFilter.value,
+        type: typeFilter.value,
+        time: timeFilter.value,
+        weather: weatherFilter.value,
+        difficulty: difficultyFilter.value,
+        lang: currentLang
+      };
+    }
+
+    function updateUrlState() {
+      const params = new URLSearchParams();
+      Object.entries(selectedState()).forEach(([key, value]) => {
+        if (value !== "all" && value !== "ru") params.set(key, value);
+      });
+      const nextUrl = `${window.location.pathname}${params.toString() ? `?${params}` : ""}`;
+      window.history.replaceState(null, "", nextUrl);
+      return window.location.href;
+    }
+
+    function restoreStateFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const filters = [
+        ["audience", audienceFilter],
+        ["budget", budgetFilter],
+        ["type", typeFilter],
+        ["time", timeFilter],
+        ["weather", weatherFilter],
+        ["difficulty", difficultyFilter]
+      ];
+
+      filters.forEach(([key, select]) => {
+        const value = params.get(key);
+        if (value && [...select.options].some((option) => option.value === value)) {
+          select.value = value;
+        }
+      });
+
+      if (params.get("lang") === "kz") {
+        currentLang = "kz";
+        document.querySelectorAll(".lang-btn").forEach((item) => item.classList.toggle("is-active", item.dataset.lang === "kz"));
+      }
+    }
+
+    async function shareCurrentLink() {
+      const url = updateUrlState();
+      const title = document.title;
+      const textToShare = currentLang === "kz"
+        ? "Алматыда демалысқа идея таңдаңыз"
+        : "Выберите идею для выходных в Алматы";
+
+      try {
+        if (navigator.share) {
+          await navigator.share({ title, text: textToShare, url });
+          shareStatus.textContent = text("shareReady");
+          return;
+        }
+
+        if (navigator.clipboard) {
+          await navigator.clipboard.writeText(url);
+          shareStatus.textContent = text("shareCopied");
+          return;
+        }
+
+        shareStatus.textContent = text("shareError");
+      } catch (error) {
+        shareStatus.textContent = text("shareError");
+      }
     }
 
     function render(list) {
@@ -1363,6 +1490,7 @@
     function applyFilters(shouldScroll = false) {
       updateSummary();
       render(filterIdeas());
+      updateUrlState();
       if (shouldScroll) {
         document.querySelector("#ideasGrid").scrollIntoView({ behavior: "smooth", block: "start" });
       }
@@ -1408,16 +1536,20 @@
         applyLanguage();
         updateSummary();
         render(filterIdeas());
+        updateUrlState();
       });
     });
+
+    document.querySelector("#shareBtn").addEventListener("click", shareCurrentLink);
 
     [audienceFilter, budgetFilter, typeFilter, timeFilter, weatherFilter, difficultyFilter].forEach((filter) => {
       filter.addEventListener("change", () => applyFilters());
     });
 
+    restoreStateFromUrl();
     applyLanguage();
     updateSummary();
-    render(ideas);
+    render(filterIdeas());
   </script>
 </body>
 </html>
