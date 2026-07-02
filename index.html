@@ -96,6 +96,29 @@
       margin-top: 26px;
     }
 
+    .lang-switch {
+      display: flex;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .lang-btn {
+      min-height: 36px;
+      border: 2px solid rgba(58, 134, 255, 0.24);
+      border-radius: 8px;
+      padding: 0 13px;
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+      font-weight: 850;
+    }
+
+    .lang-btn.is-active {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+
     .primary,
     .secondary {
       min-height: 48px;
@@ -161,7 +184,7 @@
 
     .filters {
       display: grid;
-      grid-template-columns: 1.2fr 1fr 1fr auto;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
       align-items: end;
       padding: 18px;
@@ -224,6 +247,44 @@
       justify-content: space-between;
       gap: 16px;
       margin: 36px 0 16px;
+    }
+
+    .best-pick {
+      display: none;
+      margin-bottom: 22px;
+      border: 3px solid rgba(255, 159, 28, 0.42);
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 246, 0.95));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .best-pick.is-visible {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+    }
+
+    .best-pick img {
+      width: 100%;
+      height: 100%;
+      min-height: 210px;
+      object-fit: cover;
+    }
+
+    .best-body {
+      padding: 18px;
+    }
+
+    .best-label {
+      display: inline-flex;
+      width: fit-content;
+      margin-bottom: 10px;
+      border-radius: 999px;
+      padding: 7px 11px;
+      background: #ffe066;
+      color: #6b4300;
+      font-size: 13px;
+      font-weight: 900;
     }
 
     h2 {
@@ -301,6 +362,23 @@
       margin-bottom: 14px;
     }
 
+    .meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin: 0 0 14px;
+    }
+
+    .meta-item {
+      border-radius: 8px;
+      padding: 9px 10px;
+      background: #f4f7ff;
+      color: #29406f;
+      font-size: 13px;
+      font-weight: 850;
+      line-height: 1.3;
+    }
+
     .tag {
       padding: 6px 9px;
       border-radius: 999px;
@@ -349,6 +427,12 @@
     .cafe {
       background: #fff1d6;
       color: #8a4e00;
+    }
+
+    .cafe a {
+      color: #7a3500;
+      text-decoration: underline;
+      text-underline-offset: 3px;
     }
 
     .transport {
@@ -454,9 +538,13 @@
 
     @media (max-width: 920px) {
       .hero,
-      .filters,
+      .best-pick.is-visible,
       .featured {
         grid-template-columns: 1fr;
+      }
+
+      .filters {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .hero {
@@ -493,6 +581,10 @@
         grid-template-columns: 1fr;
       }
 
+      .meta-grid {
+        grid-template-columns: 1fr;
+      }
+
       .transport-actions {
         grid-template-columns: 1fr;
       }
@@ -502,6 +594,7 @@
         top: 8px;
         z-index: 2;
         padding: 12px;
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -516,6 +609,10 @@
         <div class="hero-actions">
           <button class="primary" type="button" id="randomBtn">Сгенерировать идею</button>
           <button class="secondary" type="button" id="showAllBtn">Показать все варианты</button>
+        </div>
+        <div class="lang-switch" aria-label="Переключатель языка">
+          <button class="lang-btn is-active" type="button" data-lang="ru">RU</button>
+          <button class="lang-btn" type="button" data-lang="kz">KZ</button>
         </div>
       </div>
 
@@ -559,6 +656,36 @@
         </select>
       </label>
 
+      <label>
+        Время
+        <select id="timeFilter">
+          <option value="all">Любое</option>
+          <option value="short">2-3 часа</option>
+          <option value="half">Полдня</option>
+          <option value="full">Весь день</option>
+        </select>
+      </label>
+
+      <label>
+        Погода
+        <select id="weatherFilter">
+          <option value="all">Любая</option>
+          <option value="sun">Солнечно</option>
+          <option value="rain">Дождь</option>
+          <option value="cold">Холодно</option>
+        </select>
+      </label>
+
+      <label>
+        Сложность
+        <select id="difficultyFilter">
+          <option value="all">Любая</option>
+          <option value="easy">Легко</option>
+          <option value="medium">Средне</option>
+          <option value="active">Активно</option>
+        </select>
+      </label>
+
       <button class="primary" type="button" id="applyBtn">Подобрать</button>
       <div class="filter-summary" id="filterSummary"></div>
     </section>
@@ -570,6 +697,7 @@
           <p class="hint" id="resultText">Подборка для быстрого выбора прогулки по Алматы.</p>
         </div>
       </div>
+      <article class="best-pick" id="bestPick"></article>
       <div class="empty" id="emptyState">Пока нет точного совпадения. Попробуйте выбрать другой бюджет или формат.</div>
       <div class="grid" id="ideasGrid"></div>
     </section>
@@ -814,10 +942,131 @@
     const audienceFilter = document.querySelector("#audienceFilter");
     const budgetFilter = document.querySelector("#budgetFilter");
     const typeFilter = document.querySelector("#typeFilter");
+    const timeFilter = document.querySelector("#timeFilter");
+    const weatherFilter = document.querySelector("#weatherFilter");
+    const difficultyFilter = document.querySelector("#difficultyFilter");
     const ideasGrid = document.querySelector("#ideasGrid");
     const resultText = document.querySelector("#resultText");
     const emptyState = document.querySelector("#emptyState");
     const filterSummary = document.querySelector("#filterSummary");
+    const bestPick = document.querySelector("#bestPick");
+    let currentLang = "ru";
+
+    function enrichIdea(idea) {
+      const budget = Number(idea.budget);
+      const activeRoute = (idea.types || []).includes("active");
+      const mountainRoute = /Медеу|Шымбулак|Кок-Тобе/.test(idea.place);
+      const gardenRoute = /Ботанический/.test(idea.place);
+      const centerRoute = /Панфилов|Арбат|центр/.test(idea.place);
+
+      idea.duration = budget === 15000 ? "2-3 часа" : budget === 30000 ? "3-4 часа" : "5-6 часов";
+      idea.time = budget === 15000 ? "short" : budget === 30000 ? "half" : "full";
+      idea.difficulty = activeRoute && budget === 50000 ? "active" : activeRoute ? "medium" : "easy";
+      idea.difficultyLabel = {
+        easy: "Легко",
+        medium: "Средне",
+        active: "Активно"
+      }[idea.difficulty];
+      idea.weather = mountainRoute
+        ? ["sun", "cold"]
+        : gardenRoute
+          ? ["sun"]
+          : centerRoute
+            ? ["sun", "rain"]
+            : ["sun", "rain", "cold"];
+      idea.weatherLabel = idea.weather
+        .map((item) => ({ sun: "солнце", rain: "дождь", cold: "холодно" })[item])
+        .join(", ");
+      idea.budgetFor = {
+        family: "бюджет на семью 3-4 человека",
+        students: "бюджет на компанию 2-3 человека",
+        couple: "бюджет на двоих",
+        senior: "бюджет на 1-2 человека"
+      }[idea.audience];
+      idea.cafeUrl = `https://yandex.com/maps/?text=${encodeURIComponent(`${idea.cafe.replace("Кафе: ", "").replace("Ресторан: ", "")} Алматы`)}`;
+      return idea;
+    }
+
+    ideas.forEach(enrichIdea);
+
+    const ui = {
+      ru: {
+        found: (count) => `Найдено вариантов: ${count}. Выберите карточку, которая больше всего подходит под настроение.`,
+        empty: "Попробуйте смягчить фильтры, например оставить любой формат.",
+        best: "Лучший выбор по фильтрам",
+        duration: "Длительность",
+        difficulty: "Сложность",
+        weather: "Погода",
+        budgetFor: "Бюджет",
+        place: "Место",
+        cafe: "Где поесть",
+        bus: "Автобус",
+        taxi: "Яндекс Такси",
+        openCafe: "открыть на карте",
+        geoStart: "Определяем ваше местоположение...",
+        geoBus: "Открываем маршрут автобусом в Яндекс Картах.",
+        geoTaxi: "Открываем Яндекс Такси от вашего местоположения.",
+        geoFallback: "Геолокация недоступна. Открываем точку назначения."
+      },
+      kz: {
+        found: (count) => `Табылған нұсқалар: ${count}. Көңіл-күйіңізге сай карточканы таңдаңыз.`,
+        empty: "Сүзгілерді жеңілдетіп көріңіз, мысалы форматты 'кез келген' деп қалдырыңыз.",
+        best: "Сүзгілер бойынша үздік таңдау",
+        duration: "Ұзақтығы",
+        difficulty: "Қиындығы",
+        weather: "Ауа райы",
+        budgetFor: "Бюджет",
+        place: "Орын",
+        cafe: "Қайда тамақтану",
+        bus: "Автобус",
+        taxi: "Яндекс Такси",
+        openCafe: "картада ашу",
+        geoStart: "Орналасқан жеріңіз анықталуда...",
+        geoBus: "Автобус бағытын Яндекс Картада ашамыз.",
+        geoTaxi: "Орналасқан жеріңізден Яндекс Такси ашамыз.",
+        geoFallback: "Геолокация қолжетімсіз. Бару нүктесін ашамыз."
+      }
+    };
+
+    function text(key, ...args) {
+      const value = ui[currentLang][key];
+      return typeof value === "function" ? value(...args) : value;
+    }
+
+    function difficultyText(idea) {
+      const labels = {
+        ru: { easy: "Легко", medium: "Средне", active: "Активно" },
+        kz: { easy: "Жеңіл", medium: "Орташа", active: "Белсенді" }
+      };
+      return labels[currentLang][idea.difficulty];
+    }
+
+    function weatherText(idea) {
+      const labels = {
+        ru: { sun: "солнце", rain: "дождь", cold: "холодно" },
+        kz: { sun: "күн ашық", rain: "жаңбыр", cold: "суық" }
+      };
+      return idea.weather.map((item) => labels[currentLang][item]).join(", ");
+    }
+
+    function budgetForText(idea) {
+      const labels = {
+        ru: {
+          family: "бюджет на семью 3-4 человека",
+          students: "бюджет на компанию 2-3 человека",
+          couple: "бюджет на двоих",
+          senior: "бюджет на 1-2 человека"
+        },
+        kz: {
+          family: "3-4 адамдық отбасыға бюджет",
+          students: "2-3 адамдық компанияға бюджет",
+          couple: "екі адамға бюджет",
+          senior: "1-2 адамға бюджет"
+        }
+      };
+      return labels[currentLang][idea.audience];
+    }
+
     const filterLabels = {
       audience: {
         all: "Все компании",
@@ -837,15 +1086,109 @@
         sights: "Достопримечательности",
         active: "Активный отдых",
         food: "Кафе и рестораны"
+      },
+      time: {
+        all: "Любое время",
+        short: "2-3 часа",
+        half: "Полдня",
+        full: "Весь день"
+      },
+      weather: {
+        all: "Любая погода",
+        sun: "Солнечно",
+        rain: "Дождь",
+        cold: "Холодно"
+      },
+      difficulty: {
+        all: "Любая сложность",
+        easy: "Легко",
+        medium: "Средне",
+        active: "Активно"
       }
     };
+
+    const filterLabelsKz = {
+      audience: {
+        all: "Барлық компаниялар",
+        family: "Отбасы үшін",
+        students: "Студенттер үшін",
+        couple: "Жұптар үшін",
+        senior: "Зейнет жасындағы адамдар үшін"
+      },
+      budget: {
+        all: "Кез келген бюджет",
+        15000: "15 000 ₸ дейін",
+        30000: "30 000 ₸ дейін",
+        50000: "50 000 ₸ дейін"
+      },
+      type: {
+        all: "Кез келген формат",
+        sights: "Көрікті жерлер",
+        active: "Белсенді демалыс",
+        food: "Кафе және мейрамханалар"
+      },
+      time: {
+        all: "Кез келген уақыт",
+        short: "2-3 сағат",
+        half: "Жарты күн",
+        full: "Толық күн"
+      },
+      weather: {
+        all: "Кез келген ауа райы",
+        sun: "Күн ашық",
+        rain: "Жаңбыр",
+        cold: "Суық"
+      },
+      difficulty: {
+        all: "Кез келген қиындық",
+        easy: "Жеңіл",
+        medium: "Орташа",
+        active: "Белсенді"
+      }
+    };
+
+    const optionText = {
+      ru: filterLabels,
+      kz: filterLabelsKz
+    };
+
+    function activeLabels() {
+      return currentLang === "kz" ? filterLabelsKz : filterLabels;
+    }
+
+    function setSelectOptions(select, labels) {
+      [...select.options].forEach((option) => {
+        option.textContent = labels[option.value];
+      });
+    }
+
+    function applyLanguage() {
+      const langLabels = activeLabels();
+      setSelectOptions(audienceFilter, langLabels.audience);
+      setSelectOptions(budgetFilter, langLabels.budget);
+      setSelectOptions(typeFilter, langLabels.type);
+      setSelectOptions(timeFilter, langLabels.time);
+      setSelectOptions(weatherFilter, langLabels.weather);
+      setSelectOptions(difficultyFilter, langLabels.difficulty);
+
+      audienceFilter.parentNode.childNodes[0].nodeValue = currentLang === "kz" ? "Кім үшін" : "Для кого";
+      budgetFilter.parentNode.childNodes[0].nodeValue = currentLang === "kz" ? "Бюджет" : "Бюджет";
+      typeFilter.parentNode.childNodes[0].nodeValue = currentLang === "kz" ? "Формат" : "Формат";
+      timeFilter.parentNode.childNodes[0].nodeValue = currentLang === "kz" ? "Уақыт" : "Время";
+      weatherFilter.parentNode.childNodes[0].nodeValue = currentLang === "kz" ? "Ауа райы" : "Погода";
+      difficultyFilter.parentNode.childNodes[0].nodeValue = currentLang === "kz" ? "Қиындық" : "Сложность";
+      document.querySelector("#applyBtn").textContent = currentLang === "kz" ? "Таңдау" : "Подобрать";
+      document.querySelector("#randomBtn").textContent = currentLang === "kz" ? "Идея ұсыну" : "Сгенерировать идею";
+      document.querySelector("#showAllBtn").textContent = currentLang === "kz" ? "Барлығын көрсету" : "Показать все варианты";
+    }
 
     function render(list) {
       ideasGrid.innerHTML = "";
       emptyState.style.display = list.length ? "none" : "block";
       resultText.textContent = list.length
-        ? `Найдено вариантов: ${list.length}. Выберите карточку, которая больше всего подходит под настроение.`
-        : "Попробуйте смягчить фильтры, например оставить любой формат.";
+        ? text("found", list.length)
+        : text("empty");
+      renderBestPick(list);
 
       list.forEach((idea) => {
         const card = document.createElement("article");
@@ -857,15 +1200,21 @@
           <div class="idea-body">
             <div class="tags">${idea.tags.map((tag) => `<span class="tag">${tag}</span>`).join("")}</div>
             <h3>${idea.title}</h3>
+            <div class="meta-grid">
+              <div class="meta-item">${text("duration")}: ${idea.duration}</div>
+              <div class="meta-item">${text("difficulty")}: ${difficultyText(idea)}</div>
+              <div class="meta-item">${text("weather")}: ${weatherText(idea)}</div>
+              <div class="meta-item">${text("budgetFor")}: ${budgetForText(idea)}</div>
+            </div>
             <p>${idea.text}</p>
             <div class="route">${idea.route}</div>
-            <div class="place">Место: ${idea.place}</div>
-            <div class="cafe">${idea.cafe}</div>
+            <div class="place">${text("place")}: ${idea.place}</div>
+            <div class="cafe">${text("cafe")}: ${idea.cafe.replace("Кафе: ", "").replace("Ресторан: ", "")} · <a href="${idea.cafeUrl}" target="_blank" rel="noreferrer">${text("openCafe")}</a></div>
             <div class="transport">
               <div class="transport-text">${idea.bus}</div>
               <div class="transport-actions">
-                <button class="map-btn" type="button" data-action="bus" data-index="${ideas.indexOf(idea)}">Автобус</button>
-                <button class="taxi-btn" type="button" data-action="taxi" data-index="${ideas.indexOf(idea)}">Яндекс Такси</button>
+                <button class="map-btn" type="button" data-action="bus" data-index="${ideas.indexOf(idea)}">${text("bus")}</button>
+                <button class="taxi-btn" type="button" data-action="taxi" data-index="${ideas.indexOf(idea)}">${text("taxi")}</button>
               </div>
               <div class="geo-status" aria-live="polite"></div>
             </div>
@@ -873,6 +1222,36 @@
         `;
         ideasGrid.appendChild(card);
       });
+    }
+
+    function renderBestPick(list) {
+      if (!list.length) {
+        bestPick.classList.remove("is-visible");
+        bestPick.innerHTML = "";
+        return;
+      }
+
+      const selected = [...list].sort((a, b) => {
+        const difficultyScore = { easy: 1, medium: 2, active: 3 };
+        return difficultyScore[a.difficulty] - difficultyScore[b.difficulty] || Number(a.budget) - Number(b.budget);
+      })[0];
+
+      bestPick.classList.add("is-visible");
+      bestPick.innerHTML = `
+        <img src="${selected.image}" alt="${selected.place}" loading="lazy">
+        <div class="best-body">
+          <span class="best-label">${text("best")}</span>
+          <h3>${selected.title}</h3>
+          <p>${selected.text}</p>
+          <div class="meta-grid">
+            <div class="meta-item">${text("duration")}: ${selected.duration}</div>
+            <div class="meta-item">${text("difficulty")}: ${difficultyText(selected)}</div>
+            <div class="meta-item">${text("weather")}: ${weatherText(selected)}</div>
+            <div class="meta-item">${text("budgetFor")}: ${budgetForText(selected)}</div>
+          </div>
+          <div class="route">${selected.route}</div>
+        </div>
+      `;
     }
 
     function yandexMapsUrl(destination, mode = "auto", origin = null) {
@@ -902,7 +1281,7 @@
     }
 
     function openWithLocation(idea, mode, statusNode) {
-      statusNode.textContent = "Определяем ваше местоположение...";
+      statusNode.textContent = text("geoStart");
       const routeWindow = window.open("", "_blank");
 
       const navigate = (url) => {
@@ -915,8 +1294,8 @@
 
       const openRoute = (origin) => {
         statusNode.textContent = mode === "bus"
-          ? "Открываем маршрут автобусом в Яндекс Картах."
-          : "Открываем Яндекс Такси от вашего местоположения.";
+          ? text("geoBus")
+          : text("geoTaxi");
         const url = mode === "bus"
           ? yandexMapsUrl(idea, "mt", origin)
           : yandexTaxiUrl(idea, origin);
@@ -924,7 +1303,7 @@
       };
 
       const openFallback = () => {
-        statusNode.textContent = "Геолокация недоступна. Открываем точку назначения.";
+        statusNode.textContent = text("geoFallback");
         const url = mode === "bus"
           ? yandexMapsUrl(idea, "mt")
           : yandexTaxiUrl(idea, null);
@@ -947,10 +1326,14 @@
     }
 
     function updateSummary() {
+      const labels = activeLabels();
       const selected = [
-        filterLabels.audience[audienceFilter.value],
-        filterLabels.budget[budgetFilter.value],
-        filterLabels.type[typeFilter.value]
+        labels.audience[audienceFilter.value],
+        labels.budget[budgetFilter.value],
+        labels.type[typeFilter.value],
+        labels.time[timeFilter.value],
+        labels.weather[weatherFilter.value],
+        labels.difficulty[difficultyFilter.value]
       ];
 
       filterSummary.innerHTML = selected
@@ -962,12 +1345,18 @@
       const audience = audienceFilter.value;
       const budget = budgetFilter.value;
       const type = typeFilter.value;
+      const time = timeFilter.value;
+      const weather = weatherFilter.value;
+      const difficulty = difficultyFilter.value;
 
       return ideas.filter((idea) => {
         const audienceMatch = audience === "all" || idea.audience === audience;
         const budgetMatch = budget === "all" || Number(idea.budget) <= Number(budget);
         const typeMatch = type === "all" || (idea.types || [idea.type]).includes(type);
-        return audienceMatch && budgetMatch && typeMatch;
+        const timeMatch = time === "all" || idea.time === time;
+        const weatherMatch = weather === "all" || idea.weather.includes(weather);
+        const difficultyMatch = difficulty === "all" || idea.difficulty === difficulty;
+        return audienceMatch && budgetMatch && typeMatch && timeMatch && weatherMatch && difficultyMatch;
       });
     }
 
@@ -987,6 +1376,9 @@
       audienceFilter.value = "all";
       budgetFilter.value = "all";
       typeFilter.value = "all";
+      timeFilter.value = "all";
+      weatherFilter.value = "all";
+      difficultyFilter.value = "all";
       updateSummary();
       render(ideas);
       document.querySelector("#ideasGrid").scrollIntoView({ behavior: "smooth", block: "start" });
@@ -1009,10 +1401,21 @@
       openWithLocation(idea, button.dataset.action, statusNode);
     });
 
-    [audienceFilter, budgetFilter, typeFilter].forEach((filter) => {
+    document.querySelectorAll(".lang-btn").forEach((button) => {
+      button.addEventListener("click", () => {
+        currentLang = button.dataset.lang;
+        document.querySelectorAll(".lang-btn").forEach((item) => item.classList.toggle("is-active", item === button));
+        applyLanguage();
+        updateSummary();
+        render(filterIdeas());
+      });
+    });
+
+    [audienceFilter, budgetFilter, typeFilter, timeFilter, weatherFilter, difficultyFilter].forEach((filter) => {
       filter.addEventListener("change", () => applyFilters());
     });
 
+    applyLanguage();
     updateSummary();
     render(ideas);
   </script>
