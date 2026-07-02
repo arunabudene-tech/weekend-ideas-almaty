@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Генератор идей для выходных в Алматы</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17233a;
+      --muted: #5d6577;
+      --paper: #fff7dd;
+      --panel: #ffffff;
+      --pink: #ff5c8a;
+      --orange: #ff9f1c;
+      --yellow: #ffe066;
+      --green: #37c77f;
+      --cyan: #2ec4b6;
+      --blue: #3a86ff;
+      --violet: #8338ec;
+      --line: rgba(23, 35, 58, 0.16);
+      --shadow: 0 22px 48px rgba(44, 34, 90, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(115deg, rgba(255, 224, 102, 0.72) 0%, rgba(255, 92, 138, 0.22) 34%, rgba(46, 196, 182, 0.24) 68%, rgba(58, 134, 255, 0.2) 100%),
+        repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.42) 0 14px, rgba(255, 255, 255, 0.12) 14px 28px),
+        #fff7dd;
+      min-height: 100vh;
+    }
+
+    button,
+    select {
+      font: inherit;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 42px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 28px;
+      align-items: center;
+      min-height: 470px;
+      padding: 34px 0 26px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 8px 12px;
+      border: 2px solid rgba(255, 159, 28, 0.36);
+      border-radius: 999px;
+      background: #fff2b8;
+      color: #7a4300;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin: 20px 0 14px;
+      font-size: clamp(38px, 7vw, 78px);
+      line-height: 0.95;
+      letter-spacing: 0;
+      color: #152544;
+      text-shadow: 0 4px 0 rgba(255, 255, 255, 0.72);
+    }
+
+    .lead {
+      max-width: 660px;
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(17px, 2vw, 21px);
+      line-height: 1.55;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+
+    .primary,
+    .secondary {
+      min-height: 48px;
+      border: 0;
+      border-radius: 8px;
+      padding: 0 18px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .primary {
+      background: linear-gradient(135deg, var(--pink), var(--violet));
+      color: #fff;
+      box-shadow: 0 14px 28px rgba(131, 56, 236, 0.28);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .primary:hover,
+    .secondary:hover {
+      transform: translateY(-2px);
+    }
+
+    .secondary {
+      background: #ffffff;
+      color: #183153;
+      border: 2px solid rgba(58, 134, 255, 0.28);
+    }
+
+    .city-card {
+      position: relative;
+      min-height: 390px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background:
+        linear-gradient(180deg, rgba(255, 159, 28, 0.18), rgba(23, 35, 58, 0.78)),
+        url("https://images.unsplash.com/photo-1597625861573-24f1cf36d07f?auto=format&fit=crop&w=900&q=80") center/cover;
+    }
+
+    .city-card::after {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 6px;
+      pointer-events: none;
+    }
+
+    .city-note {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 24px;
+      color: #fff;
+    }
+
+    .city-note strong {
+      display: block;
+      font-size: 28px;
+      line-height: 1.05;
+      margin-bottom: 8px;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr auto;
+      gap: 12px;
+      align-items: end;
+      padding: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.92);
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(255, 242, 184, 0.94));
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(10px);
+      margin-bottom: 34px;
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      color: #804c00;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    select {
+      width: 100%;
+      min-height: 48px;
+      border: 2px solid rgba(58, 134, 255, 0.22);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      padding: 0 12px;
+      font-weight: 750;
+      outline-color: var(--blue);
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(58, 134, 255, 0.08);
+    }
+
+    select:focus {
+      border-color: var(--blue);
+    }
+
+    .filter-summary {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .summary-pill {
+      border-radius: 999px;
+      padding: 8px 11px;
+      background: #eafff8;
+      color: #0d6f61;
+      font-size: 13px;
+      font-weight: 850;
+      border: 1px solid rgba(46, 196, 182, 0.34);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 36px 0 16px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(25px, 4vw, 42px);
+      letter-spacing: 0;
+    }
+
+    .hint {
+      margin: 0;
+      color: var(--muted);
+      max-width: 500px;
+      line-height: 1.45;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .idea-card {
+      display: flex;
+      min-height: 310px;
+      flex-direction: column;
+      border-radius: 8px;
+      background: var(--panel);
+      border: 2px solid rgba(255, 255, 255, 0.86);
+      box-shadow: 0 12px 24px rgba(44, 34, 90, 0.12);
+      overflow: hidden;
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .idea-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 36px rgba(44, 34, 90, 0.18);
+    }
+
+    .stripe {
+      height: 10px;
+      background: linear-gradient(90deg, var(--pink), var(--orange), var(--yellow), var(--green), var(--blue));
+    }
+
+    .idea-card[data-type="sights"] .stripe {
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+    }
+
+    .idea-card[data-type="active"] .stripe {
+      background: linear-gradient(90deg, var(--green), var(--yellow), var(--orange));
+    }
+
+    .idea-card[data-type="food"] .stripe {
+      background: linear-gradient(90deg, var(--pink), var(--orange));
+    }
+
+    .idea-body {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      padding: 18px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .tag {
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: #fff0f6;
+      color: #a01850;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .idea-card h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+      line-height: 1.12;
+    }
+
+    .idea-card p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .route {
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      color: #384856;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .featured {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .info-block {
+      border-radius: 8px;
+      padding: 22px;
+      border: 2px solid rgba(255, 255, 255, 0.88);
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(234, 255, 248, 0.9));
+      box-shadow: 0 10px 22px rgba(44, 34, 90, 0.08);
+    }
+
+    .info-block h3 {
+      margin: 0 0 10px;
+      font-size: 22px;
+    }
+
+    .info-block ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .empty {
+      display: none;
+      padding: 24px;
+      border: 1px dashed rgba(36, 49, 61, 0.32);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.7);
+      color: var(--muted);
+      font-weight: 700;
+      text-align: center;
+    }
+
+    footer {
+      margin-top: 34px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    footer a {
+      color: #2f6fb4;
+      font-weight: 800;
+    }
+
+    @media (max-width: 920px) {
+      .hero,
+      .filters,
+      .featured {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .city-card {
+        min-height: 310px;
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
+      .page {
+        width: min(100% - 22px, 1180px);
+        padding-top: 16px;
+      }
+
+      .hero-actions,
+      .section-title {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .primary,
+      .secondary {
+        width: 100%;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .filters {
+        position: sticky;
+        top: 8px;
+        z-index: 2;
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div>
+        <div class="eyebrow">Алматы · быстрый план на выходные</div>
+        <h1>Генератор идей для прогулки</h1>
+        <p class="lead">Выберите компанию, бюджет и настроение отдыха. Сайт подберет понятный маршрут: где погулять, что посмотреть и как завершить день в кафе или ресторане.</p>
+        <div class="hero-actions">
+          <button class="primary" type="button" id="randomBtn">Сгенерировать идею</button>
+          <button class="secondary" type="button" id="showAllBtn">Показать все варианты</button>
+        </div>
+      </div>
+
+      <div class="city-card" aria-label="Вид на Алматы и горы">
+        <div class="city-note">
+          <strong>Горы, парки, кофе и вечерний город</strong>
+          <span>Маршруты рассчитаны на 2-5 часов и легко меняются под погоду.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="filters" aria-label="Фильтры генератора">
+      <label>
+        Для кого
+        <select id="audienceFilter">
+          <option value="all">Все</option>
+          <option value="family">Для семьи</option>
+          <option value="students">Для студентов</option>
+          <option value="couple">Для пар</option>
+          <option value="senior">Для пенсионного возраста</option>
+        </select>
+      </label>
+
+      <label>
+        Бюджет
+        <select id="budgetFilter">
+          <option value="all">Любой</option>
+          <option value="15000">до 15 000 ₸</option>
+          <option value="30000">до 30 000 ₸</option>
+          <option value="50000">до 50 000 ₸</option>
+        </select>
+      </label>
+
+      <label>
+        Формат
+        <select id="typeFilter">
+          <option value="all">Любой</option>
+          <option value="sights">Достопримечательности</option>
+          <option value="active">Активный отдых</option>
+          <option value="food">Кафе и рестораны</option>
+        </select>
+      </label>
+
+      <button class="primary" type="button" id="applyBtn">Подобрать</button>
+      <div class="filter-summary" id="filterSummary"></div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <div>
+          <h2>Идеи маршрутов</h2>
+          <p class="hint" id="resultText">Подборка для быстрого выбора прогулки по Алматы.</p>
+        </div>
+      </div>
+      <div class="empty" id="emptyState">Пока нет точного совпадения. Попробуйте выбрать другой бюджет или формат.</div>
+      <div class="grid" id="ideasGrid"></div>
+    </section>
+
+    <section>
+      <div class="section-title">
+        <div>
+          <h2>Разделы отдыха</h2>
+          <p class="hint">Три основных сценария, из которых собраны маршруты.</p>
+        </div>
+      </div>
+
+      <div class="featured">
+        <article class="info-block">
+          <h3>Достопримечательности города</h3>
+          <ul>
+            <li>Парк 28 панфиловцев, Вознесенский собор и Зеленый базар.</li>
+            <li>Кок-Тобе с обзором города и вечерними фото.</li>
+            <li>Ботанический сад и прогулки без спешки.</li>
+          </ul>
+        </article>
+
+        <article class="info-block">
+          <h3>Активный отдых</h3>
+          <ul>
+            <li>Медеу, Терренкур и легкие маршруты у гор.</li>
+            <li>Велопрогулка или самокаты по спокойным городским зонам.</li>
+            <li>Шымбулак как вариант для бюджета повыше.</li>
+          </ul>
+        </article>
+
+        <article class="info-block">
+          <h3>Кафе и рестораны</h3>
+          <ul>
+            <li>Кофейни у Панфилова и Арбата для короткой прогулки.</li>
+            <li>Семейные кафе рядом с парками и ТРЦ.</li>
+            <li>Ресторан с казахской кухней для спокойного завершения дня.</li>
+          </ul>
+        </article>
+
+        <article class="info-block">
+          <h3>Как считать бюджет</h3>
+          <ul>
+            <li>15 000 ₸: прогулка, легкий перекус, транспорт по городу.</li>
+            <li>30 000 ₸: входные билеты, кафе и небольшой запас.</li>
+            <li>50 000 ₸: насыщенный день с рестораном или горной активностью.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <footer>
+      Цены указаны ориентировочно для планирования прогулки в Алматы. Перед поездкой проверьте актуальные билеты, график работы и меню на официальных страницах мест.
+      Источники для локаций: <a href="https://visitalmaty.kz/" target="_blank" rel="noreferrer">Visit Almaty</a>, <a href="https://koktobe.com/" target="_blank" rel="noreferrer">Кок-Тобе</a>, <a href="https://botsad.kz/" target="_blank" rel="noreferrer">Ботанический сад</a>.
+    </footer>
+  </main>
+
+  <script>
+    const ideas = [
+      {
+        title: "Семейный день: парк, собор и сладкий финал",
+        audience: "family",
+        budget: "15000",
+        type: "sights",
+        types: ["sights", "food"],
+        tags: ["семья", "до 15 000 ₸", "достопримечательности"],
+        text: "Спокойная прогулка по центру без сложной логистики: детям интересно, взрослым красиво, а бюджет остается мягким.",
+        route: "Парк 28 панфиловцев → Вознесенский собор → Зеленый базар → мороженое или чай в кафе."
+      },
+      {
+        title: "Семья на Кок-Тобе",
+        audience: "family",
+        budget: "30000",
+        type: "active",
+        types: ["sights", "active", "food"],
+        tags: ["семья", "до 30 000 ₸", "активно"],
+        text: "Подъем к виду на город, прогулка по парку и пара аттракционов. Хорошо подходит для половины дня.",
+        route: "Канатная дорога → обзорная площадка → детские зоны → семейное кафе."
+      },
+      {
+        title: "Большой семейный день у гор",
+        audience: "family",
+        budget: "50000",
+        type: "food",
+        types: ["active", "food"],
+        tags: ["семья", "до 50 000 ₸", "кафе"],
+        text: "Больше воздуха, больше впечатлений и нормальный обед после прогулки.",
+        route: "Медеу → короткая прогулка у гор → фото на фоне катка → ресторан с казахской кухней."
+      },
+      {
+        title: "Студенческий центр: дешево и насыщенно",
+        audience: "students",
+        budget: "15000",
+        type: "food",
+        types: ["sights", "food"],
+        tags: ["студенты", "до 15 000 ₸", "кафе"],
+        text: "Маршрут для компании: много пешком, много фото, кофе вместо тяжелого обеда.",
+        route: "Арбат → улица Панфилова → Парк 28 панфиловцев → кофе и донеры рядом с центром."
+      },
+      {
+        title: "Студенты и горный воздух",
+        audience: "students",
+        budget: "30000",
+        type: "active",
+        types: ["active", "food"],
+        tags: ["студенты", "до 30 000 ₸", "активно"],
+        text: "Когда хочется выбраться из города, но не превращать выходной в экспедицию.",
+        route: "Медеу → лестница здоровья или прогулка по ущелью → горячий чай → кафе у дороги."
+      },
+      {
+        title: "Студенческий вау-день",
+        audience: "students",
+        budget: "50000",
+        type: "active",
+        types: ["active", "food"],
+        tags: ["студенты", "до 50 000 ₸", "активно"],
+        text: "Для компании, которая хочет яркий день: горы, подъемники и хороший ужин.",
+        route: "Медеу → Шымбулак → прогулка и фото → ужин в демократичном ресторане."
+      },
+      {
+        title: "Свидание в Ботаническом саду",
+        audience: "couple",
+        budget: "15000",
+        type: "sights",
+        types: ["sights", "food"],
+        tags: ["пара", "до 15 000 ₸", "достопримечательности"],
+        text: "Нежный маршрут без суеты: деревья, дорожки, разговоры и кофе после прогулки.",
+        route: "Ботанический сад → тихая фотопрогулка → кофейня поблизости."
+      },
+      {
+        title: "Вечерний Кок-Тобе для двоих",
+        audience: "couple",
+        budget: "30000",
+        type: "food",
+        types: ["sights", "food"],
+        tags: ["пара", "до 30 000 ₸", "кафе"],
+        text: "Красивый вид, закат и легкий ужин. Хороший вариант для романтичного вечера.",
+        route: "Канатная дорога → обзорная площадка → аллея и фото → ужин или десерт."
+      },
+      {
+        title: "Ресторанный вечер после прогулки",
+        audience: "couple",
+        budget: "50000",
+        type: "food",
+        types: ["active", "food"],
+        tags: ["пара", "до 50 000 ₸", "кафе"],
+        text: "Для случая, когда прогулка должна плавно перейти в красивый ужин.",
+        route: "Терренкур → прогулка у реки → ресторан на выбор: казахская, грузинская или паназиатская кухня."
+      },
+      {
+        title: "Спокойный центр для старшего возраста",
+        audience: "senior",
+        budget: "15000",
+        type: "sights",
+        types: ["sights", "food"],
+        tags: ["пенсионный возраст", "до 15 000 ₸", "достопримечательности"],
+        text: "Короткие расстояния, много скамеек и знакомые городские места.",
+        route: "Парк 28 панфиловцев → Вознесенский собор → неспешный чай в кафе."
+      },
+      {
+        title: "Ботанический сад без спешки",
+        audience: "senior",
+        budget: "30000",
+        type: "sights",
+        types: ["sights", "food"],
+        tags: ["пенсионный возраст", "до 30 000 ₸", "достопримечательности"],
+        text: "Мягкий маршрут для прогулки, отдыха и красивых сезонных фотографий.",
+        route: "Ботанический сад → длинная лавочка-пауза → обед в спокойном кафе."
+      },
+      {
+        title: "Комфортный день с видом на город",
+        audience: "senior",
+        budget: "50000",
+        type: "food",
+        types: ["sights", "food"],
+        tags: ["пенсионный возраст", "до 50 000 ₸", "кафе"],
+        text: "Минимум пешей нагрузки, максимум красивого вида и комфортный ресторанный финал.",
+        route: "Такси до Кок-Тобе → обзорные площадки → чай → ранний ужин в ресторане."
+      }
+    ];
+
+    const audienceFilter = document.querySelector("#audienceFilter");
+    const budgetFilter = document.querySelector("#budgetFilter");
+    const typeFilter = document.querySelector("#typeFilter");
+    const ideasGrid = document.querySelector("#ideasGrid");
+    const resultText = document.querySelector("#resultText");
+    const emptyState = document.querySelector("#emptyState");
+    const filterSummary = document.querySelector("#filterSummary");
+    const filterLabels = {
+      audience: {
+        all: "Все компании",
+        family: "Для семьи",
+        students: "Для студентов",
+        couple: "Для пар",
+        senior: "Для пенсионного возраста"
+      },
+      budget: {
+        all: "Любой бюджет",
+        15000: "До 15 000 ₸",
+        30000: "До 30 000 ₸",
+        50000: "До 50 000 ₸"
+      },
+      type: {
+        all: "Любой формат",
+        sights: "Достопримечательности",
+        active: "Активный отдых",
+        food: "Кафе и рестораны"
+      }
+    };
+
+    function render(list) {
+      ideasGrid.innerHTML = "";
+      emptyState.style.display = list.length ? "none" : "block";
+      resultText.textContent = list.length
+        ? `Найдено вариантов: ${list.length}. Выберите карточку, которая больше всего подходит под настроение.`
+        : "Попробуйте смягчить фильтры, например оставить любой формат.";
+
+      list.forEach((idea) => {
+        const card = document.createElement("article");
+        card.className = "idea-card";
+        card.dataset.type = idea.type;
+        card.innerHTML = `
+          <div class="stripe"></div>
+          <div class="idea-body">
+            <div class="tags">${idea.tags.map((tag) => `<span class="tag">${tag}</span>`).join("")}</div>
+            <h3>${idea.title}</h3>
+            <p>${idea.text}</p>
+            <div class="route">${idea.route}</div>
+          </div>
+        `;
+        ideasGrid.appendChild(card);
+      });
+    }
+
+    function updateSummary() {
+      const selected = [
+        filterLabels.audience[audienceFilter.value],
+        filterLabels.budget[budgetFilter.value],
+        filterLabels.type[typeFilter.value]
+      ];
+
+      filterSummary.innerHTML = selected
+        .map((item) => `<span class="summary-pill">${item}</span>`)
+        .join("");
+    }
+
+    function filterIdeas() {
+      const audience = audienceFilter.value;
+      const budget = budgetFilter.value;
+      const type = typeFilter.value;
+
+      return ideas.filter((idea) => {
+        const audienceMatch = audience === "all" || idea.audience === audience;
+        const budgetMatch = budget === "all" || Number(idea.budget) <= Number(budget);
+        const typeMatch = type === "all" || (idea.types || [idea.type]).includes(type);
+        return audienceMatch && budgetMatch && typeMatch;
+      });
+    }
+
+    function applyFilters(shouldScroll = false) {
+      updateSummary();
+      render(filterIdeas());
+      if (shouldScroll) {
+        document.querySelector("#ideasGrid").scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    document.querySelector("#applyBtn").addEventListener("click", () => {
+      applyFilters(true);
+    });
+
+    document.querySelector("#showAllBtn").addEventListener("click", () => {
+      audienceFilter.value = "all";
+      budgetFilter.value = "all";
+      typeFilter.value = "all";
+      updateSummary();
+      render(ideas);
+      document.querySelector("#ideasGrid").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    document.querySelector("#randomBtn").addEventListener("click", () => {
+      const filtered = filterIdeas();
+      const source = filtered.length ? filtered : ideas;
+      const selected = source[Math.floor(Math.random() * source.length)];
+      render([selected]);
+      document.querySelector("#ideasGrid").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    [audienceFilter, budgetFilter, typeFilter].forEach((filter) => {
+      filter.addEventListener("change", () => applyFilters());
+    });
+
+    updateSummary();
+    render(ideas);
+  </script>
+</body>
+</html>
